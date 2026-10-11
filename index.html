@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Latihan UTBK: Penalaran Matematika &amp; Kognitif</title>
+<style>
+:root{--bg:#f7f7f4;--card:#fff;--tx:#1d1d1b;--mu:#6b6b66;--bd:#e2e2dc;--ac:#2f5fd0;--ok:#1f8a4c;--okb:#e5f5ea;--bad:#c0392b;--badb:#fbe9e7;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17181a;--card:#222427;--tx:#ececea;--mu:#9a9a95;--bd:#34363a;--ac:#7aa2ff;--ok:#5fd08a;--okb:#16301f;--bad:#ff8a7a;--badb:#3a1f1c}}
+:root[data-theme="dark"]{--bg:#17181a;--card:#222427;--tx:#ececea;--mu:#9a9a95;--bd:#34363a;--ac:#7aa2ff;--ok:#5fd08a;--okb:#16301f;--bad:#ff8a7a;--badb:#3a1f1c}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 14px 60px}
+h1{font-size:1.4rem;margin:0 0 4px}p.sub{margin:0 0 16px;color:var(--mu);font-size:.92rem}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tab{flex:1;padding:10px 8px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.tab small{display:block;font-weight:400;color:var(--mu)}.tab.on{border-color:var(--ac);box-shadow:0 0 0 1px var(--ac)}
+.q{border:1px solid var(--bd);background:var(--card);border-radius:12px;padding:14px;margin:0 0 12px}
+legend{font-weight:600;padding:0 6px;max-width:100%}
+.opt{display:flex;gap:8px;align-items:flex-start;padding:8px 10px;margin-top:6px;border:1px solid var(--bd);border-radius:8px;cursor:pointer}
+.opt.ok{background:var(--okb);border-color:var(--ok)}.opt.bad{background:var(--badb);border-color:var(--bad)}
+.opt input{margin-top:5px}.ex{margin:10px 0 0;font-size:.9rem;color:var(--mu)}
+.bar{display:flex;gap:8px;margin-top:16px}
+.btn{flex:1;padding:12px;border-radius:10px;border:1px solid var(--ac);background:var(--ac);color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.btn.g{background:transparent;color:var(--ac)}
+#res{display:none;background:var(--card);border:1px solid var(--ac);border-radius:12px;padding:14px;margin-bottom:14px}
+#res b{font-size:1.3rem}
+</style></head><body><main>
+<h1>Latihan UTBK</h1>
+<p class="sub">100 soal: 50 Penalaran Matematika + 50 Penalaran Kognitif. Setelah memilih jawaban, penyelesaian dan tips cepat langsung muncul. Tekan “Periksa Jawaban” untuk melihat skor total.</p>
+<div id="res"></div>
+<div class="tabs" id="tabs"></div>
+<form id="qs" onsubmit="return false"></form>
+<div class="bar"><button type="button" class="btn" onclick="check()">Periksa Jawaban</button><button type="button" class="btn g" onclick="init()">Ulangi (acak)</button></div>
+</main>
+<script>
+const PM=[
+["Harga baju Rp200.000 diskon 25%, lalu diskon tambahan 10%. Harga akhir?","Rp135.000","Rp130.000","Rp140.000","Rp150.000","200.000×0,75×0,9 = 135.000"],
+["Rata-rata 5 bilangan adalah 12. Jika bilangan 18 dihapus, rata-rata 4 bilangan sisanya?","10,5","10","11","11,5","(60−18)/4 = 10,5"],
+["Umur Ayah : Anak = 7 : 2 dan selisihnya 35 tahun. Umur anak?","14 tahun","10 tahun","21 tahun","28 tahun","5 bagian = 35, 1 bagian = 7; anak = 14"],
+["Mobil 60 km/jam menempuh A–B dalam 3 jam. Dengan 90 km/jam, waktunya?","2 jam","1,5 jam","2,5 jam","3 jam","Jarak 180 km; 180/90 = 2"],
+["Jika 2x + 3 = 15, nilai 3x − 1 adalah ...","17","15","19","21","x = 6, jadi 18 − 1 = 17"],
+["Suku ke-20 barisan 3, 7, 11, 15, ... adalah ...","79","75","83","87","3 + 19×4 = 79"],
+["Dua dadu dilempar. Peluang jumlah mata 8?","5/36","1/6","1/9","7/36","(2,6),(3,5),(4,4),(5,3),(6,2) = 5 dari 36"],
+["Luas persegi panjang 48 cm², panjang 3 kali lebar. Kelilingnya?","32 cm","28 cm","36 cm","40 cm","3l² = 48, l = 4, p = 12; K = 32"],
+["Median data 4, 8, 6, 10, 12, 7 adalah ...","7,5","7","8","8,5","Urut: 4,6,7,8,10,12; (7+8)/2"],
+["3 pekerja menyelesaikan proyek 12 hari. Dengan 4 pekerja?","9 hari","8 hari","10 hari","16 hari","36 hari-orang; 36/4 = 9"],
+["Nilai 2⁵ + 3³ − 4² adalah ...","43","41","45","47","32 + 27 − 16 = 43"],
+["Jika x : y = 3 : 4 dan y : z = 2 : 5, maka x : z = ...","3 : 10","6 : 5","3 : 5","2 : 5","x:y = 6:8, y:z = 8:20; x:z = 6:20"],
+["Dari 40 siswa: 25 suka matematika, 20 suka fisika, 8 tidak suka keduanya. Yang suka keduanya?","13 siswa","7 siswa","12 siswa","15 siswa","32 suka minimal satu; 25+20−32 = 13"],
+["f(x) = 2x − 3. Nilai f(f(2)) adalah ...","−1","1","−3","5","f(2) = 1; f(1) = −1"],
+["Jumlah akar persamaan x² − 5x + 6 = 0 adalah ...","5","6","−5","−6","Akar 2 dan 3"],
+["Tabungan Rp1.000.000, bunga tunggal 6% per tahun. Setelah 8 bulan menjadi ...","Rp1.040.000","Rp1.048.000","Rp1.060.000","Rp1.080.000","Bunga = 1.000.000×6%×8/12 = 40.000"],
+["Volume kubus dengan rusuk 6 cm adalah ...","216 cm³","36 cm³","144 cm³","180 cm³","6³ = 216"],
+["Segitiga siku-siku dengan sisi tegak 9 cm dan 12 cm. Sisi miringnya?","15 cm","13 cm","14 cm","21 cm","√(81+144) = 15"],
+["40% dari 250 ditambah 25% dari 80 adalah ...","120","110","125","130","100 + 20"],
+["Banyak cara 3 dari 5 orang duduk berjajar di 3 kursi?","60","10","20","120","P(5,3) = 5×4×3"],
+["Jumlah 10 suku pertama deret aritmetika a = 2, b = 3 adalah ...","155","145","150","160","S = 5(4 + 27) = 155"],
+["Kereta 120 m, 72 km/jam, melewati sebuah tiang. Waktunya?","6 detik","5 detik","4 detik","8 detik","72 km/jam = 20 m/s; 120/20 = 6"],
+["Jika a + b = 10 dan ab = 21, maka a² + b² = ...","58","42","79","142","100 − 2×21 = 58"],
+["Banyak bilangan asli x yang memenuhi 3x − 7 < 11 adalah ...","5","4","6","7","x < 6: yaitu 1,2,3,4,5"],
+["Barang dibeli Rp80.000 dijual rugi 15%. Harga jualnya?","Rp68.000","Rp65.000","Rp70.000","Rp72.000","85% × 80.000"],
+["Selisih kuadrat dua bilangan bulat berurutan adalah 31. Bilangan yang lebih kecil?","15","13","14","16","2n + 1 = 31, n = 15"],
+["Rata-rata nilai 20 siswa 70 dan 30 siswa lain 80. Rata-rata gabungan?","76","75","77","78","(1.400 + 2.400)/50 = 76"],
+["4 liter larutan garam 10% ditambah 1 liter air murni. Kadar garam baru?","8%","6%","7%","9%","0,4 / 5 = 8%"],
+["Luas seperempat lingkaran berjari-jari 7 cm (π = 22/7)?","38,5 cm²","35,5 cm²","44 cm²","77 cm²","¼ × 154 = 38,5"],
+["Nilai ²log 32 + ³log 9 adalah ...","7","5","6","8","5 + 2"],
+["Peluang muncul minimal 1 gambar pada 3 lemparan koin?","7/8","1/8","3/4","3/8","1 − (1/2)³"],
+["Suku ke-6 dari 2, 6, 18, 54, ... adalah ...","486","324","162","972","2 × 3⁵"],
+["2 pensil + 1 buku = Rp11.000; 1 pensil + 2 buku = Rp13.000. Harga 1 pensil + 1 buku?","Rp8.000","Rp7.000","Rp9.000","Rp10.000","Jumlahkan: 3p+3b = 24.000"],
+["Sudut terkecil antara jarum jam dan menit pukul 03.30?","75°","60°","90°","105°","Jam 105°, menit 180°"],
+["Taksi: Rp8.000 + Rp4.000/km. Budi membayar Rp40.000. Jaraknya?","8 km","6 km","7 km","10 km","(40.000−8.000)/4.000 = 8"],
+["Pipa A mengisi tangki 6 jam, pipa B 12 jam. Jika bersama?","4 jam","3 jam","5 jam","9 jam","1/6 + 1/12 = 1/4"],
+["Lampu A menyala tiap 12 detik, B tiap 18 detik. Bersamaan pertama kali pada detik ke- ...","36","24","6","72","KPK(12,18) = 36"],
+["Sisa pembagian 2¹⁰ oleh 7 adalah ...","2","1","4","6","2³ ≡ 1 (mod 7), jadi 2¹⁰ ≡ 2"],
+["Trapesium: sisi sejajar 10 cm dan 14 cm, tinggi 8 cm. Luasnya?","96 cm²","88 cm²","112 cm²","120 cm²","½(10+14)×8 = 96"],
+["Grafik y = 2x + k melalui titik (3, 5). Nilai k?","−1","1","2","−3","5 = 6 + k"],
+["Variansi populasi data 2, 4, 6, 8, 10 adalah ...","8","6","10","40","Rata-rata 6; (16+4+0+4+16)/5"],
+["5 tahun lalu umur A tiga kali umur B; 5 tahun lagi dua kali. Umur A sekarang?","35 tahun","30 tahun","40 tahun","45 tahun","a−5 = 3(b−5), a+5 = 2(b+5): b = 15, a = 35"],
+["Promo beli 2 gratis 1. Membeli 9 barang @Rp12.000, total bayar?","Rp72.000","Rp60.000","Rp84.000","Rp108.000","3 gratis, bayar 6 barang"],
+["Kantong: 4 merah, 6 biru. Ambil 2 tanpa pengembalian. Peluang keduanya merah?","2/15","4/25","1/15","3/10","(4/10)(3/9) = 2/15"],
+["Harga naik dari 80 menjadi 100. Persentase kenaikannya?","25%","20%","30%","125%","20/80 = 25%"],
+["Skala peta 1 : 500.000. Jarak di peta 6 cm. Jarak sebenarnya?","30 km","3 km","12 km","50 km","6 × 500.000 = 3.000.000 cm"],
+["Penyelesaian |2x − 4| = 10 adalah ...","x = 7 atau x = −3","x = 7 saja","x = 7 atau x = 3","x = −7 atau x = 3","2x − 4 = ±10"],
+["Bilangan dua digit berjumlah digit 11; jika dibalik bertambah 27. Bilangannya?","47","38","56","29","9(b−a) = 27, a+b = 11: a=4, b=7"],
+["Volume tabung r = 7 cm, t = 10 cm (π = 22/7)?","1.540 cm³","770 cm³","1.440 cm³","3.080 cm³","22/7 × 49 × 10"],
+["Pergi 40 km/jam, pulang 60 km/jam (jarak sama). Kecepatan rata-rata?","48 km/jam","50 km/jam","52 km/jam","45 km/jam","2·40·60/(40+60) = 48"]
+];
+const PK=[
+["Semua pelajar rajin. Sebagian pelajar adalah atlet. Simpulan yang benar:","Sebagian atlet rajin","Semua atlet rajin","Tidak ada atlet rajin","Semua yang rajin adalah atlet","Atlet yang pelajar pasti rajin"],
+["Semua kucing adalah hewan. Tidak ada hewan yang berakar. Simpulan:","Tidak ada kucing berakar","Sebagian kucing berakar","Semua hewan adalah kucing","Sebagian hewan berakar","Kucing ⊂ hewan, hewan tidak berakar"],
+["Jika hujan maka jalan basah. Jalan tidak basah. Simpulan:","Tidak hujan","Hujan","Mungkin hujan","Jalan basah","Modus tollens"],
+["Jika belajar maka lulus. Budi lulus. Simpulan yang pasti benar:","Tidak dapat disimpulkan apakah Budi belajar","Budi belajar","Budi tidak belajar","Budi malas","Menyimpulkan sebab dari akibat tidak sahih"],
+["Deret 2, 5, 10, 17, 26, ... Suku berikutnya?","37","35","36","38","Selisih 3,5,7,9,11"],
+["Deret huruf B, D, G, K, P, ... Selanjutnya?","V","U","W","X","Loncat +2,+3,+4,+5,+6; P(16)+6 = V"],
+["Dokter : Rumah Sakit = Guru : ...","Sekolah","Murid","Buku","Kelas","Profesi dan tempat kerja"],
+["Panas : Dingin = Terang : ...","Gelap","Lampu","Siang","Matahari","Pasangan antonim"],
+["Pena : Menulis = Pisau : ...","Memotong","Tajam","Dapur","Daging","Alat dan fungsinya"],
+["Deret 1, 1, 2, 3, 5, 8, ... Selanjutnya?","13","11","12","14","Fibonacci: 5 + 8"],
+["Deret 2, 4, 12, 48, 240, ... Selanjutnya?","1.440","1.200","1.220","1.920","Dikali 2,3,4,5,6"],
+["Deret 100, 95, 85, 70, 50, ... Selanjutnya?","25","20","30","35","Dikurangi 5,10,15,20,25"],
+["A lebih tinggi dari B, B lebih tinggi dari C, D lebih pendek dari C. Siapa paling pendek?","D","A","B","C","A > B > C > D"],
+["Lima orang antre: A di depan B, C di belakang B, D tepat di depan A, E paling belakang. Siapa urutan ke-3?","B","A","C","D","Urutan: D, A, B, C, E"],
+["Kemarin lusa adalah Kamis. Besok adalah hari ...","Minggu","Sabtu","Senin","Jumat","Hari ini Sabtu"],
+["Semua mahasiswa peserta seminar. Dina bukan peserta seminar. Simpulan:","Dina bukan mahasiswa","Dina mahasiswa","Dina mungkin mahasiswa","Dina peserta lain","Kontraposisi"],
+["Rina lebih tua dari Sari. Tia lebih tua dari Sari. Siapa pasti paling muda?","Sari","Rina","Tia","Tidak dapat ditentukan","Sari lebih muda dari keduanya"],
+["Semua produk toko itu bergaransi. Sebuah jam dari toko itu rusak setelah 1 bulan. Simpulan:","Jam itu bergaransi","Jam itu bukan dari toko","Semua jam rusak","Garansi tidak berlaku","Produk toko ⇒ bergaransi"],
+["Pola bangun: persegi, segitiga, lingkaran, persegi, segitiga, ... Berikutnya?","Lingkaran","Persegi","Segitiga","Belah ketupat","Pola berulang tiap 3"],
+["Panah ↑ diputar 90° searah jarum jam sebanyak 3 kali. Hasilnya?","←","↑","→","↓","↑ → ↓ ←"],
+["Deret 2, 3, 5, 7, 11, 13, ... Selanjutnya?","17","15","16","19","Bilangan prima"],
+["Deret 1, 4, 9, 16, 25, ... Selanjutnya?","36","30","35","49","Kuadrat bilangan asli"],
+["Deret 81, 27, 9, 3, ... Selanjutnya?","1","0","2","6","Dibagi 3"],
+["Kode: setiap huruf digeser +1 (MEJA → NFKB). BUKU ditulis ...","CVLV","CULV","CVKV","DWMW","B→C, U→V, K→L, U→V"],
+["Dengan A=1, B=2, C=3, ... nilai kata BED adalah ...","11","10","12","13","2 + 5 + 4"],
+["Tugas P, Q, R berurutan. Q sebelum P. R bukan pertama dan bukan terakhir. Urutannya?","Q, R, P","R, Q, P","P, R, Q","Q, P, R","R di tengah; Q sebelum P"],
+["Enam kursi bernomor 1–6 melingkar searah jarum jam. Budi di kursi 2, Ani berhadapan dengannya. Ani di kursi ...","5","3","4","6","Berhadapan selisih 3: 2 + 3"],
+["Ingkaran “Jika lampu padam maka kipas berhenti” adalah ...","Lampu padam dan kipas tidak berhenti","Lampu tidak padam atau kipas berhenti","Jika lampu tidak padam maka kipas tidak berhenti","Lampu padam dan kipas berhenti","~(p ⇒ q) ≡ p ∧ ~q"],
+["Ingkaran “Semua siswa hadir” adalah ...","Ada siswa yang tidak hadir","Semua siswa tidak hadir","Tidak ada siswa hadir","Ada siswa yang hadir","Negasi “semua” = “ada yang tidak”"],
+["Semua A adalah B. Sebagian B adalah C. Simpulan yang pasti benar:","Tidak dapat ditentukan apakah ada A yang C","Sebagian A adalah C","Semua A adalah C","Tidak ada A yang C","Irisan A dan C tidak terjamin"],
+["Kontraposisi “Jika hujan maka banjir” adalah ...","Jika tidak banjir maka tidak hujan","Jika tidak hujan maka tidak banjir","Jika banjir maka hujan","Hujan atau banjir","~q ⇒ ~p"],
+["Baris: (2, 4, 8), (3, 9, 27), (4, 16, ...). Angka yang hilang?","64","32","48","256","n, n², n³"],
+["Baris: (2, 3, 6), (4, 5, 20), (6, 7, ...). Angka yang hilang?","42","13","36","48","Kolom 3 = kolom 1 × kolom 2"],
+["5 mesin membuat 5 barang dalam 5 menit. 100 mesin membuat 100 barang dalam ...","5 menit","100 menit","20 menit","1 menit","Tiap mesin 1 barang per 5 menit"],
+["Pena + penghapus = Rp1.100; pena lebih mahal Rp1.000 dari penghapus. Harga penghapus?","Rp50","Rp100","Rp150","Rp1.050","p + (p+1.000) = 1.100, p = 50"],
+["Eceng gondok menggandakan luas tiap hari dan menutup danau penuh dalam 30 hari. Menutup separuh pada hari ke- ...","29","15","20","25","Sehari sebelum penuh"],
+["Sebagian dokter adalah penulis. Semua penulis suka membaca. Simpulan:","Sebagian dokter suka membaca","Semua dokter suka membaca","Tidak ada dokter suka membaca","Semua penulis adalah dokter","Dokter-penulis pasti suka membaca"],
+["Tidak ada reptil berbulu. Semua ular adalah reptil. Simpulan:","Tidak ada ular berbulu","Semua ular berbulu","Sebagian ular berbulu","Semua reptil adalah ular","Ular ⊂ reptil"],
+["Penjualan: Jan 120, Feb 150, Mar 180, Apr 210. Jika pola tetap, Mei?","240","230","250","260","Naik 30 per bulan"],
+["Ani, Budi, Cici punya kucing, anjing, burung (masing-masing satu). Ani bukan kucing/burung; Budi bukan anjing/burung. Cici punya ...","Burung","Kucing","Anjing","Tidak dapat ditentukan","Ani anjing, Budi kucing, Cici burung"],
+["Rapat mulai 08.45 dan berlangsung 2 jam 50 menit. Selesai pukul ...","11.35","11.15","11.25","11.45","08.45 + 2.50"],
+["Andi berjalan 4 km ke utara lalu 3 km ke timur. Jarak lurus dari titik awal?","5 km","7 km","6 km","12 km","Tripel Pythagoras 3-4-5"],
+["Sinta menghadap utara, belok kanan, putar balik, lalu belok kiri. Kini menghadap ...","Selatan","Utara","Timur","Barat","U → T → B → S"],
+["Kotak berisi 3 bola merah dan 2 biru. Minimal berapa bola diambil agar pasti ada 1 merah?","3","1","2","4","Kasus terburuk: 2 biru dulu"],
+["Minimal berapa orang agar pasti ada dua orang yang lahir di bulan yang sama?","13","12","24","25","Prinsip lubang merpati: 12 + 1"],
+["Deret 2, 5, 4, 10, 6, 15, 8, ... Selanjutnya?","20","18","12","25","Posisi genap +5; ganjil +2"],
+["Antonim “optimis” adalah ...","Pesimis","Realistis","Ambisius","Antusias","Optimis lawan pesimis"],
+["Sinonim “prediksi” adalah ...","Ramalan","Fakta","Hasil","Kenyataan","Sama-sama perkiraan masa depan"],
+["“Penjualan payung meningkat saat musim hujan.” Simpulan paling tepat:","Musim hujan berkaitan dengan naiknya penjualan payung","Penjualan payung menyebabkan hujan","Hujan hanya turun jika payung terjual","Payung hanya dibutuhkan saat hujan lebat","Hubungan, bukan sebab terbalik"],
+["Hari ini Rabu. 100 hari lagi adalah hari ...","Jumat","Kamis","Sabtu","Minggu","100 mod 7 = 2; Rabu + 2"]
+];
+const T=[["Diskon bertingkat: kalikan faktornya, 0,75×0,9 = 0,675 (bukan diskon 35%).","Cari total dulu (rata-rata × banyak data), kurangi, baru bagi sisa data.","Selisih bagian rasio = selisih nyata, jadi cari nilai 1 bagian.","Jarak tetap: kecepatan dan waktu berbanding terbalik (60:90 = 2:3, jadi 3 jam menjadi 2).","Cari x dulu, lalu substitusi ke ekspresi yang ditanya.","Pakai Un = a + (n−1)b langsung.","Daftar pasangan jumlah 8; ruang sampel dua dadu selalu 36.","Cari faktor 48 dengan rasio 3:1 (12 dan 4), tanpa persamaan panjang.","Urutkan dulu; data genap berarti rata-rata dua nilai tengah.","Pekerjaan tetap: orang × hari = konstan.","Hitung tiap suku terpisah, waspada salah pangkat.","Samakan nilai y yang sama (KPK 4 dan 2 = 8).","Pakai rumus: A∪B = total − yang tidak keduanya.","Kerjakan dari dalam ke luar.","Jumlah akar = −b/a, tak perlu mencari akarnya.","Ubah 8 bulan menjadi 8/12 tahun.","Hafal 6³ = 216.","Kenali tripel 3-4-5 (kelipatan 3: 9-12-15).","40% × 250 = 4×25; 25% = seperempat.","Urutan penting berarti permutasi; kalikan turun 3 faktor.","Pakai S = n/2 (2a + (n−1)b).","km/jam ke m/s: bagi 3,6 (72 → 20).","a²+b² = (a+b)² − 2ab.","Selesaikan pertidaksamaan dulu, lalu hitung bilangan bulat yang masuk (waspada < bukan ≤).","Rugi 15% berarti kalikan 0,85.","Selisih kuadrat bilangan berurutan = jumlah keduanya: n + (n+1) = 31.","Rata-rata gabungan itu berbobot, bukan (70+80)/2.","Garam tetap; hitung massanya dulu lalu bagi volume baru.","π = 22/7 dan r = 7: angka 7 saling coret.","Pecah dulu: 2⁵ = 32 dan 3² = 9.","Peluang 'minimal 1' = 1 − peluang tidak ada sama sekali.","Rasio ×3, pakai Un = a·r^(n−1).","Jangan cari tiap harga; jumlahkan kedua persamaan lalu bagi 3.","Jam 30°/jam, menit 6°/menit; jarum jam ikut bergeser 0,5° tiap menit.","Kurangi biaya tetap dulu, baru bagi tarif per km.","Kerja bersama: jumlahkan laju (1/t).","'Bersamaan lagi' = KPK.","Cari siklus sisa: 2, 4, 1 berulang tiap 3 pangkat.","Rata-rata sisi sejajar × tinggi: 12 × 8.","Substitusi titik langsung ke persamaan.","Variansi = rata-rata kuadrat selisih dari rata-rata; data simetris, jadi cepat.","Buat dua persamaan lalu eliminasi.","Kelompokkan per 3 barang (bayar 2): 9 barang = 3 kelompok.","Tanpa pengembalian: penyebut turun, 10 menjadi 9.","Persen naik = selisih/awal; 20/80 = 1/4 = 25%.","1 : 500.000 berarti 1 cm = 5 km; kalikan 6.","Mutlak berarti ±: selesaikan dua kasus.","Selisih bilangan dibalik = 9 × selisih digit.","22/7 × 7² × 10: coret satu 7 dulu.","Pergi-pulang: rata-rata harmonik 2ab/(a+b), bukan (a+b)/2."],["Gambar Venn: irisan pelajar-atlet berada di dalam 'rajin'.","Buat rantai: kucing → hewan → tidak berakar.","Jika p→q, maka ¬q→¬p selalu sahih.","Menegaskan akibat (q benar) tidak memastikan sebab; ini jebakan umum.","Hitung selisih dulu; selisihnya naik 2 tiap langkah.","Ubah huruf ke angka (A=1), lalu cari loncatannya.","Tentukan hubungannya (profesi-tempat), terapkan ke pasangan kedua.","Cari relasi antonim, pastikan kelas kata sama.","Relasi alat dan fungsinya.","Tiap suku = jumlah dua suku sebelumnya.","Cek pengali: 2→4 (×2), 4→12 (×3), dan seterusnya naik.","Selisih makin besar tiap 5; kurangi 25 berikutnya.","Tulis rantai A > B > C > D di satu garis.","Buat 5 kotak, isi syarat pasti dulu (E terakhir).","Mundur dari 'kemarin lusa': tambah 2 hari = hari ini.","Pakai kontraposisi: bukan peserta → bukan mahasiswa.","Gambar garis umur; titik terendah = Sari.","Dari premis umum turunkan ke kasus khusus.","Cari panjang siklus (3), lalu hitung sisanya.","Tiap putaran 90° kanan: ↑ → → → ↓ → ←.","Deret prima: lompat ke bilangan prima berikutnya.","Kuadrat sempurna: berikutnya 6² = 36.","Rasio tetap ÷3.","Geser +1 per huruf, kerjakan huruf demi huruf.","Jumlahkan nilai tiap huruf: B=2, E=5, D=4.","Tempatkan syarat paling pasti dulu (R di tengah).","Pada 6 kursi, berhadapan = selisih 3.","Ingat: ~(p→q) = p ∧ ~q.","Negasi 'semua' = 'ada yang tidak'.","Hati-hati: 'sebagian' tidak otomatis menurun lewat 'semua'.","Kontraposisi = balik posisi lalu negasikan keduanya.","Tebak pola kolom: n, n², n³.","Cek hubungan kolom 3 dengan dua kolom lain (dikali).","Jangan terkecoh: tiap mesin 1 barang per 5 menit.","Waspada jebakan Rp100; pakai persamaan.","Mundur dari akhir: sehari sebelum penuh.","Gambar Venn: dokter-penulis berada dalam 'suka membaca'.","Rantai: ular → reptil → tidak berbulu.","Hitung selisih tetap lalu lanjutkan.","Eliminasi lewat syarat 'bukan', sisakan satu kemungkinan.","Jam dulu, menit kemudian: 08.45 + 2 jam = 10.45, lalu + 50 menit.","Hafal tripel 3-4-5.","Gambar mata angin dan putar langkah demi langkah.","Hitung kasus terburuk: semua yang bukan merah dulu, lalu +1.","Merpati: jumlah kategori + 1.","Pisah menjadi dua deret berselang.","Pilih lawan kata yang paling berseberangan.","Samakan kelas kata dan makna.","Korelasi tidak sama dengan sebab; pilih simpulan yang tidak berlebihan.","100 mod 7 = 2, maju 2 hari dari Rabu."]];
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const S=["Penalaran Matematika","Penalaran Kognitif"],L="ABCD";
+let D,cur=0,done=false;
+function init(){done=false;document.getElementById("res").style.display="none";D=[PM,PK].map((d,k)=>d.map((r,n)=>{const o=sh(r.slice(1,5));return{q:r[0],o:o,a:o.indexOf(r[1]),e:r[5],t:T[k][n],s:-1}}));draw();window.scrollTo(0,0)}
+function draw(){
+document.getElementById("tabs").innerHTML=S.map((t,i)=>'<button type="button" class="tab'+(i==cur?' on':'')+'" onclick="cur='+i+';draw()">'+t+'<small>'+D[i].filter(x=>x.s>=0).length+'/'+D[i].length+' dijawab</small></button>').join("");
+document.getElementById("qs").innerHTML=D[cur].map((x,i)=>'<fieldset class="q"><legend>'+(i+1)+'. '+x.q+'</legend>'+x.o.map((o,j)=>{const sw=done||x.s>=0;let c="";if(sw)c=j==x.a?" ok":(j==x.s?" bad":"");return '<label class="opt'+c+'"><input type="radio" name="q'+i+'"'+(x.s==j?' checked':'')+(sw?' disabled':'')+' onchange="pick('+i+','+j+')"><span>'+L[j]+'. '+o+'</span></label>'}).join("")+(done||x.s>=0?'<p class="ex"><b>'+(x.s<0?'Belum dijawab.':x.s==x.a?'✓ Benar.':'✗ Salah. Jawaban benar: '+L[x.a]+'.')+'</b><br>Penyelesaian: '+x.e+'<br>⚡ Tips cepat: '+x.t+'</p>':'')+'</fieldset>').join("")}
+function pick(i,j){if(done||D[cur][i].s>=0)return;D[cur][i].s=j;draw()}
+function check(){done=true;const r=D.map(d=>d.filter(x=>x.s==x.a).length),el=document.getElementById("res");
+el.innerHTML="<b>Skor total: "+(r[0]+r[1])+" / 100</b><br>"+S.map((t,i)=>t+": "+r[i]+" / "+D[i].length).join(" · ")+"<br><small>Hijau = jawaban benar, merah = jawabanmu yang salah. Buka kedua tab untuk melihat pembahasan.</small>";
+el.style.display="block";draw();window.scrollTo(0,0)}
+init();
+</script></body></html>
